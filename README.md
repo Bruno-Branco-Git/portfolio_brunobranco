@@ -14,6 +14,12 @@ com ***MArkDown***
 2.  [ ] Editar o arquivo `README.md`
 3.  [ ] Enviar Alteracoes para o github
 
+
+#### Funcionalidades 2
+*  [x] Clonar o repositorio
+*  [ ] Editar o arquivo `README.md`
+*  [ ] Enviar Alteracoes para o github
+
 ##  Tabela
 
 | Nome       | Idade | Profissão       | País        |
