@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfólio — Dev .NET</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a28;
+      --border: rgba(255,255,255,0.07);
+      --accent: #4f8ef7;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* === NOISE OVERLAY === */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* === GLOW BLOBS === */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.18;
+    }
+    .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 10%; right: -100px; }
+
+    /* === NAV === */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(10,10,15,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* === SECTIONS === */
+    section { position: relative; z-index: 1; }
+
+    /* === HERO === */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 4rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-content { max-width: 760px; }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(79,142,247,0.1);
+      border: 1px solid rgba(79,142,247,0.25);
+      color: var(--accent);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    h1 {
+      font-family: var(--font-head);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    h1 .accent { color: var(--accent); }
+    h1 .accent2 { color: var(--accent2); }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.8rem;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #6fa0ff; transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === CONTAINER === */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 4rem;
+    }
+
+    /* === SECTION LABEL === */
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+
+    /* === SKILLS === */
+    #skills { background: var(--surface); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .skill-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-card:hover {
+      border-color: rgba(79,142,247,0.35);
+      transform: translateY(-4px);
+    }
+    .skill-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+    .skill-name {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .tag {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.72rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    /* === PROJECTS === */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      border-color: rgba(167,139,250,0.4);
+      transform: translateY(-5px);
+    }
+    .project-thumb {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .project-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .project-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .project-desc { color: var(--muted); font-size: 0.88rem; flex: 1; margin-bottom: 1rem; }
+    .project-links { display: flex; gap: 0.75rem; }
+    .project-link {
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid rgba(79,142,247,0.3);
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .project-link:hover { background: rgba(79,142,247,0.1); }
+
+    /* === EXPERIENCE === */
+    #experience { background: var(--surface); }
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 140px 1px 1fr;
+      gap: 0 2rem;
+      padding-bottom: 2.5rem;
+    }
+    .timeline-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding-top: 0.2rem;
+      text-align: right;
+    }
+    .timeline-line {
+      position: relative;
+      background: var(--border);
+    }
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      top: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .timeline-content { padding-left: 0.5rem; }
+    .timeline-role {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .timeline-company {
+      color: var(--accent2);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-desc { color: var(--muted); font-size: 0.86rem; }
+
+    /* === CONTACT === */
+    #contact {
+      text-align: center;
+      padding: 6rem 4rem;
+    }
+    .contact-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .contact-email {
+      display: inline-block;
+      font-family: var(--font-head);
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.25rem;
+      margin-bottom: 2.5rem;
+      transition: color 0.2s;
+    }
+    .contact-email:hover { color: var(--accent); }
+    .social-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* === FOOTER === */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      #hero { padding: 7rem 1.5rem 3rem; }
+      .container { padding: 4rem 1.5rem; }
+      .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .timeline-date { text-align: left; }
+      .timeline-line { display: none; }
+      #contact { padding: 4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">bruno<span>.</span>dev</a>
+    <ul class="nav-links">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projetos</a></li>
+      <li><a href="#experience">Experiência</a></li>
+      <li><a href="#contact">Contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-tag">disponível para projetos</div>
+      <h1>
+        Olá, sou<br>
+        <span class="accent">Bruno Branco</span><br>
+        <span class="accent2">.NET Developer</span>
+      </h1>
+      <p class="hero-sub">
+        Desenvolvedor Full-Stack especializado em .NET, C#, Blazor e arquiteturas modernas em nuvem. Transformo ideias em produtos robustos e escaláveis.
+      </p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn btn-primary">Ver Projetos →</a>
+        <a href="#contact" class="btn btn-ghost">Entre em Contato</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-label">// competências</p>
+      <h2 class="section-title">Stack & Tecnologias</h2>
+      <div class="skills-grid">
+
+        <!-- <div class="skill-card">
+          <div class="skill-icon">⚙️</div>
+          <div class="skill-name">Backend .NET</div>
+          <p style="color:var(--muted);font-size:0.85rem;">APIs robustas, alta performance e arquitetura limpa.</p>
+          <div class="skill-tags">
+            <span class="tag">C# 12</span>
+            <span class="tag">ASP.NET Core</span>
+            <span class="tag">Minimal API</span>
+            <span class="tag">gRPC</span>
+            <span class="tag">SignalR</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🖥️</div>
+          <div class="skill-name">Frontend Blazor</div>
+          <p style="color:var(--muted);font-size:0.85rem;">SPAs e SSR com Blazor WebAssembly e Server.</p>
+          <div class="skill-tags">
+            <span class="tag">Blazor WASM</span>
+            <span class="tag">Blazor Server</span>
+            <span class="tag">MudBlazor</span>
+            <span class="tag">Radzen</span>
+            <span class="tag">CSS</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🗄️</div>
+          <div class="skill-name">Dados & ORM</div>
+          <p style="color:var(--muted);font-size:0.85rem;">Modelagem, migrations e queries otimizadas.</p>
+          <div class="skill-tags">
+            <span class="tag">EF Core</span>
+            <span class="tag">Dapper</span>
+            <span class="tag">SQL Server</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Redis</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">☁️</div>
+          <div class="skill-name">Cloud & DevOps</div>
+          <p style="color:var(--muted);font-size:0.85rem;">Deploy, CI/CD e infraestrutura como código.</p>
+          <div class="skill-tags">
+            <span class="tag">Azure</span>
+            <span class="tag">Docker</span>
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">Kubernetes</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🏗️</div>
+          <div class="skill-name">Arquitetura</div>
+          <p style="color:var(--muted);font-size:0.85rem;">Padrões sólidos para sistemas escaláveis.</p>
+          <div class="skill-tags">
+            <span class="tag">Clean Architecture</span>
+            <span class="tag">DDD</span>
+            <span class="tag">CQRS</span>
+            <span class="tag">Microservices</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🧪</div>
+          <div class="skill-name">Qualidade & Testes</div>
+          <p style="color:var(--muted);font-size:0.85rem;">Código confiável com cobertura de testes.</p>
+          <div class="skill-tags">
+            <span class="tag">xUnit</span>
+            <span class="tag">NUnit</span>
+            <span class="tag">Moq</span>
+            <span class="tag">FluentAssertions</span>
+          </div>
+        </div> -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <p class="section-label">// trabalhos</p>
+      <h2 class="section-title">Projetos em Destaque</h2>
+      <div class="projects-grid">
+<!-- 
+        <div class="project-card">
+          <div class="project-thumb">🛒</div>
+          <div class="project-body">
+            <div class="project-title">E-commerce Platform</div>
+            <p class="project-desc">Plataforma completa de e-commerce com microserviços, pagamentos integrados e painel administrativo em Blazor.</p>
+            <div class="skill-tags" style="margin-bottom:1rem">
+              <span class="tag">.NET 8</span>
+              <span class="tag">Blazor</span>
+              <span class="tag">Azure</span>
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">GitHub</a>
+              <a href="#" class="project-link">Live Demo</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">📊</div>
+          <div class="project-body">
+            <div class="project-title">Dashboard Analytics</div>
+            <p class="project-desc">Sistema de BI com gráficos em tempo real, exportação de relatórios e multi-tenant para empresas.</p>
+            <div class="skill-tags" style="margin-bottom:1rem">
+              <span class="tag">Blazor WASM</span>
+              <span class="tag">SignalR</span>
+              <span class="tag">SQL Server</span>
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">GitHub</a>
+              <a href="#" class="project-link">Live Demo</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">🔐</div>
+          <div class="project-body">
+            <div class="project-title">Auth Microservice</div>
+            <p class="project-desc">Serviço de autenticação com OAuth2, JWT, MFA e auditoria completa de acessos.</p>
+            <div class="skill-tags" style="margin-bottom:1rem">
+              <span class="tag">ASP.NET Core</span>
+              <span class="tag">OpenIddict</span>
+              <span class="tag">Redis</span>
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">GitHub</a>
+            </div>
+          </div>
+        </div> -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <!-- <div class="container">
+      <p class="section-label">// trajetória</p>
+      <h2 class="section-title">Experiência Profissional</h2>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-date">2022 — atual</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-role">Senior .NET Developer</div>
+            <div class="timeline-company">Empresa XYZ · Remoto</div>
+            <p class="timeline-desc">Liderança técnica de squad, arquitetura de microserviços, migração de sistemas legados para .NET 8 e Azure.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2020 — 2022</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-role">.NET Developer</div>
+            <div class="timeline-company">Startup ABC · São Paulo, SP</div>
+            <p class="timeline-desc">Desenvolvimento de APIs REST, módulos Blazor e integração com serviços de pagamento.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2018 — 2020</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-role">Junior Developer</div>
+            <div class="timeline-company">Consultoria DEF · São Paulo, SP</div>
+            <p class="timeline-desc">Manutenção e desenvolvimento de sistemas desktop e web em .NET Framework e MVC.</p>
+          </div>
+        </div>
+
+      </div>
+    </div> -->
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-wrapper">
+      <p class="section-label" style="text-align:center">// contato</p>
+      <h2 class="section-title" style="text-align:center">Vamos trabalhar juntos?</h2>
+      <p style="color:var(--muted);margin-bottom:2rem;font-size:0.9rem">
+        Aberto a projetos freelance, oportunidades full-time ou só uma conversa sobre tecnologia.
+      </p>
+      <a href="mailto:a30172@gmail.com" class="contact-email">a30172@gmail.com</a>
+      <div class="social-links">
+        <a href="mailto:a30172@gmail.com" class="social-btn">✉️ Enviar e-mail</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Feito com ❤️ por Bruno Manuel Pacheco Oliveira Branco · 2025</p>
+  </footer>
+
+</body>
+</html>
